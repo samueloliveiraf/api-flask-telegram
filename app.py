@@ -11,7 +11,7 @@ from message import (
     messagem_sucesso
 )
 
-import telegram
+import requests
 
 
 app = Flask(__name__)
@@ -24,12 +24,14 @@ def send_bot():
     try:
         if data_messagem.get('erro'):
             mensagem = messagem_erro(data_messagem['erro'])
-            bot = telegram.Bot(token=config('KEY_BOT'))
-            bot.send_message(chat_id=config('CHAT_ID'), text=mensagem)
         else:
             mensagem = messagem_sucesso(data_messagem['sucesso'])
-            bot = telegram.Bot(token=config('KEY_BOT'))
-            bot.send_message(chat_id=config('CHAT_ID'), text=mensagem)
+
+        bot_token = config('KEY_BOT')
+        chat_id = config('CHAT_ID')
+        url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+        params = {'chat_id': chat_id, 'text': f'{mensagem}'}
+        requests.get(url, params=params)
 
         return make_response({'envio': 'sucesso'}, 200)
 
