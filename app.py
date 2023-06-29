@@ -87,7 +87,7 @@ def auth_linkedin():
     chrome_options.add_argument("--proxy-server={0}".format(proxy.proxy))
     chrome_options.add_argument(f"--user-agent={user_agent}")
     chrome_options.add_argument("--lang=pt")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument('--window-size=1920,1080')
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
