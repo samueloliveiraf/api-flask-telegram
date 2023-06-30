@@ -71,6 +71,8 @@ def send_bot():
 @auth.login_required
 def auth_linkedin():
     data_request = request.get_json()
+    print(data_request['email'])
+    print(data_request['password'])
 
     firefox_options = Options()
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
