@@ -15,6 +15,7 @@ import requests, random
 
 from time import sleep
 
+import undetected_chromedriver as uc
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
@@ -75,20 +76,17 @@ def send_bot():
 @auth.login_required
 def auth_linkedin():
     data_request = request.get_json()
+    options = uc.ChromeOptions()
 
-    vdisplay = Xvfb()
-    vdisplay.start()
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"
 
-    firefox_options = Options()
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
-                 "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"
-    firefox_options.add_argument(f"--user-agent={user_agent}")
-    firefox_options.add_argument("--lang=pt-BR")
-    firefox_options.add_argument("--headless")
-    firefox_options.add_argument('--window-size=1920,1080')
-    firefox_options.add_argument("--no-sandbox")
+    options.add_argument(f'user-agent={user_agent}')
+    options.add_argument('--lang=pt-BR')
+    options.add_argument('--headless')
+    options.add_argument('--window-size=1920,1080')
+    options.add_argument('--no-sandbox')
 
-    driver = webdriver.Firefox(options=firefox_options)
+    driver = uc.Chrome(options=options)
 
     try:
         driver.get('https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin')
@@ -121,7 +119,6 @@ def auth_linkedin():
         return make_response({'validation_errors': response}, 400)
 
     finally:
-        vdisplay.stop()
         driver.quit()
 
 
