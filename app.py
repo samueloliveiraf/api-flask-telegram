@@ -17,11 +17,11 @@ from time import sleep
 
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 
-from browsermobproxy import Server
+from xvfbwrapper import Xvfb
 
 import chromedriver_autoinstaller
 
@@ -76,30 +76,19 @@ def send_bot():
 def auth_linkedin():
     data_request = request.get_json()
 
-    server = Server("/opt/browsermob-proxy-2.1.4/bin/browsermob-proxy")
-    server.start()
-    proxy = server.create_proxy()
+    vdisplay = Xvfb()
+    vdisplay.start()
 
-    chrome_options = Options()
-    chromedriver_autoinstaller.install()
+    firefox_options = Options()
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"
-    chrome_options.add_argument("--proxy-server={0}".format(proxy.proxy))
-    chrome_options.add_argument(f"--user-agent={user_agent}")
-    chrome_options.add_argument("--lang=pt")
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument('--window-size=1920,1080')
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument('--ignore-certificate-errors')
-    driver = webdriver.Chrome(options=chrome_options)
-    proxy.headers({'Accept-Language': 'pt-BR'})
+    firefox_options.add_argument(f"--user-agent={user_agent}")
+    firefox_options.add_argument("--lang=pt-BR")
+    firefox_options.add_argument("--headless")
+    firefox_options.add_argument('--window-size=1920,1080')
+    firefox_options.add_argument("--no-sandbox")
 
-    latitude = random.uniform(-33, 5)
-    longitude = random.uniform(-74, -34)
-    coordinates = {"latitude": latitude, "longitude": longitude}
-    driver.execute_cdp_cmd("Emulation.setGeolocationOverride", coordinates)
+    driver = webdriver.Firefox(options=firefox_options)
 
     try:
         driver.get('https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin')
@@ -132,7 +121,7 @@ def auth_linkedin():
         return make_response({'validation_errors': response}, 400)
 
     finally:
-        server.stop()
+        vdisplay.stop()
         driver.quit()
 
 

@@ -10,6 +10,7 @@ MarkupSafe==2.1.1
 python-decouple==3.6
 requests==2.31.0
 selenium==4.10.0
+xvfbwrapper==0.2.9
 telegram-send==0.34
 Werkzeug==2.2.2
 zipp==3.11.0
